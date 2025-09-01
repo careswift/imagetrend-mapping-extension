@@ -10,7 +10,10 @@
     "package": "plasmo package"
   },
   "dependencies": {
-    "plasmo": "0.90.5",
+    "@plasmohq/storage": "^1.15.0",
+    "@types/crypto-js": "^4.2.2",
+    "crypto-js": "^4.2.0",
+    "plasmo": "^0.90.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
@@ -24,8 +27,13 @@
     "typescript": "5.3.3"
   },
   "manifest": {
+    "permissions": [
+      "scripting",
+      "storage",
+      "identity"
+    ],
     "host_permissions": [
-      "https://*/*"
+      "<all_urls>"
     ]
   }
 }

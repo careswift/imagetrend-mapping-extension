@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check Redirect URI</title>
+</head>
+<body>
+    <h1>Your Extension's Redirect URI</h1>
+    <p id="uri">Loading...</p>
+    <button id="copy">Copy to Clipboard</button>
+    
+    <script>
+        chrome.runtime.sendMessage({type: 'GET_REDIRECT_URI'}, (response) => {
+            const uri = response?.uri || 'Error getting URI';
+            document.getElementById('uri').textContent = uri;
+            
+            document.getElementById('copy').onclick = () => {
+                navigator.clipboard.writeText(uri);
+                alert('Copied to clipboard!');
+            };
+        });
+    </script>
+</body>
+</html>
