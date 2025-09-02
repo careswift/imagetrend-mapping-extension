@@ -2,6 +2,7 @@ import { Storage } from "@plasmohq/storage"
 import { oktaAuth } from "./auth"
 import { apiClient } from "./api-client"
 import imagetrendExtractor from "./imagetrend-extractor"
+import { formHashGenerator } from "../services/hash-generator"
 
 const storage = new Storage({ area: "local" })
 
@@ -314,9 +315,23 @@ async function handleFormMapping(data: any, tab?: chrome.tabs.Tab) {
     // await storage.set('lastExtraction', extraction)  
     await storage.set('lastExtractionTime', extraction.extractionTime)
     
+    // Calculate structure hash before sending
+    console.log("[CareSwift Background] Calculating structure hash...")
+    console.log("[CareSwift Background] Data field count:", data.fields?.length)
+    console.log("[CareSwift Background] Data resource group count:", data.resourceGroups?.length)
+    const structureHash = await formHashGenerator.generateHash(data)
+    console.log("[CareSwift Background] Structure hash calculated:", structureHash)
+    console.log("[CareSwift Background] Hash length:", structureHash?.length)
+    
+    // Add hash to the data
+    const dataWithHash = {
+      ...data,
+      structureHash
+    }
+    
     // Send to API
     console.log("[CareSwift Background] Sending to API...")
-    const apiResponse = await apiClient.sendFormMapping(data)
+    const apiResponse = await apiClient.sendFormMapping(dataWithHash)
     
     if (apiResponse.success) {
       console.log("✅ Data sent to API successfully")

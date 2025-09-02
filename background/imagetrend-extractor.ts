@@ -114,64 +114,8 @@ export default function imagetrendExtractor() {
         // Extract repeater metadata
         repeaters: extractRepeaters(formComposer?.agencyLayouts),
         
-        // Include update functions for the backend
-        updateFunctions: {
-          // Function to update a field by its binding path
-          updateFieldByPath: `
-            function updateFieldByPath(bindingPath, value) {
-              const root = ko.contextFor(document.body).$root;
-              const model = root.currentModelObject();
-              const parts = bindingPath.split('.');
-              
-              // Navigate to correct level based on path
-              let current;
-              if (parts[0] === 'Incident') {
-                current = ko.unwrap(model.__parent).__parent;
-                parts.shift();
-              } else if (parts[0] === 'Scene') {
-                current = model.__parent;
-                parts.shift();
-              } else if (parts[0] === 'Response') {
-                current = model;
-                parts.shift();
-              } else {
-                current = model;
-              }
-              
-              // Navigate path
-              for (let i = 0; i < parts.length - 1; i++) {
-                const part = parts[i];
-                // Handle array notation like Vitals[]
-                if (part.includes('[]')) {
-                  const cleanPart = part.replace('[]', '');
-                  current = ko.unwrap(current)[cleanPart];
-                  // This would need index handling for specific items
-                } else {
-                  current = ko.unwrap(current)[part];
-                }
-                if (!current) return false;
-              }
-              
-              // Set the value
-              const finalProp = parts[parts.length - 1];
-              if (ko.isObservable(current[finalProp])) {
-                current[finalProp](value);
-                return true;
-              }
-              return false;
-            }
-          `,
-          
-          // Function to add repeating section item
-          addRepeatingSectionItem: `
-            function addRepeatingSectionItem(collectionPath) {
-              const root = ko.contextFor(document.body).$root;
-              const model = root.currentModelObject();
-              // Navigate to collection and push new item
-              // Implementation depends on ImageTrend's specific model structure
-            }
-          `
-        },
+        // Include update functions for the backend - keeping empty to match regular extension for hash consistency
+        updateFunctions: {},
         
         // Statistics
         stats: {
